@@ -1,8 +1,39 @@
-# React + Vite
+# Frontend Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Routes
 
-Currently, two official plugins are available:
+### Home Page
+`Route: /`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The home page provides a user interface for uploading CSV files for both employees and products.
+
+#### Components
+- File upload input field
+- Two action buttons:
+  - EmployeeCSV: For uploading employee data
+  - ProductCSV: For uploading product data
+
+#### UI Elements
+- Background: Light blue (sky-200)
+- Upload container: 
+  - Light blue background (sky-100)
+  - White border
+  - Rounded corners
+  - Shadow effect
+- File input: Standard file input with black border
+- Buttons:
+  - EmployeeCSV: Dark blue (sky-800)
+  - ProductCSV: Medium blue (sky-700)
+  - White text
+  - Blue borders
+
+#### Layout
+- Centered on screen
+- Vertical flex layout
+- Container size: 60% height, 50% width of screen
+- Elements spaced with gap-6 (1.5rem)
+
+#### Navigation
+- `/` - Home page
+- `/product` - Product page
+- `/employee` - Employee page
