@@ -58,7 +58,7 @@ mkdir -p public/uploads
 
 5. Start the server:
 ```bash
-npm start
+npx nodemon
 ```
 
 ### Frontend Setup
