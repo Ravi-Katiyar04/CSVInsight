@@ -1,83 +1,118 @@
+
 # Backend API Documentation
 
-## Product Endpoints
+<!-- ## Setup
+```bash
+npm install
+npm start
+``` -->
 
-### Upload CSV File
-`POST /product/uploadFile`
+## Environment Variables
+- `PORT`: Server port (default: 5000)
+- `DB_URL`: MongoDB connection string
 
-Upload and process a CSV file containing product data.
+## API Endpoints
 
-#### Request
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body Parameter:
+### 1. Product Routes
+Base path: `/product`
+
+#### Upload Product CSV
+- **Endpoint**: `POST /product/uploadFile`
+- **Content-Type**: `multipart/form-data`
+- **Request Body**:
   - `file`: CSV file containing product data
-
-#### CSV File Format
-The CSV file should contain the following columns:
-- `id` (Number)
-- `name` (String)
-- `flavour` (String)
-- `size` (String)
-- `price` (Number)
-
-#### Response
-```json
-{
+- **CSV Format**:
+  ```csv
+  name,flavour,size,price
+  Product1,Vanilla,Large,29.99
+  ```
+- **Success Response** (200):
+  ```json
+  {
     "status": 200,
-    "message": "File successfully"
-}
-```
-
-#### Error Response
-```json
-{
+    "message": "File successfully",
+    "fileType": "product"
+  }
+  ```
+- **Error Response** (400):
+  ```json
+  {
     "status": 400,
     "message": "Error message details"
-}
-```
+  }
+  ```
 
-#### Example Usage
-```bash
-curl -X POST -F "file=@products.csv" http://localhost:YOUR_PORT/product/uploadFile
-```
+### 2. Employee Routes
+Base path: `/employee`
 
-## Employee Endpoints
-
-### Upload CSV File
-`POST /employee/uploadFile`
-
-Upload and process a CSV file containing employee data.
-
-#### Request
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body Parameter:
+#### Upload Employee CSV
+- **Endpoint**: `POST /employee/uploadFile`
+- **Content-Type**: `multipart/form-data`
+- **Request Body**:
   - `file`: CSV file containing employee data
-
-#### CSV File Format
-The CSV file should contain the following columns:
-- `NAME` (String)
-- `NUMBER` (Number)
-- `ADDRESS` (String)
-
-#### Response
-```json
-{
+- **CSV Format**:
+  ```csv
+  NAME,NUMBER,ADDRESS
+  John Doe,1234567890,123 Main St
+  ```
+- **Success Response** (200):
+  ```json
+  {
     "status": 200,
     "message": "File successfully"
-}
-```
-
-#### Error Response
-```json
-{
+  }
+  ```
+- **Error Response** (400):
+  ```json
+  {
     "status": 400,
     "message": "Error message details"
+  }
+  ```
+
+### File Validation Middleware
+The application includes middleware that validates CSV files:
+
+- Checks if file is present
+- Validates CSV headers
+- Detects CSV type (employee or product)
+- Validates file format
+
+#### Error Responses for File Validation:
+```json
+{
+  "error": "No CSV file uploaded"
+}
+```
+```json
+{
+  "error": "Invalid CSV format"
+}
+```
+```json
+{
+  "error": "Error processing CSV file",
+  "details": "Error details message"
 }
 ```
 
-#### Example Usage
-```bash
-curl -X POST -F "file=@employees.csv" http://localhost:YOUR_PORT/employee/uploadFile
+### Data Models
+
+#### Product Schema
+```javascript
+{
+  name: String,
+  flavour: String,
+  size: String,
+  price: Number
+}
+```
+
+#### Employee Schema
+```javascript
+{
+  name: String,
+  number: Number,
+  address: String
+}
 ```

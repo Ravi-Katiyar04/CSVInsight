@@ -1,5 +1,5 @@
 import csvtojson from 'csvtojson';
-import Product from '../models/product.model.js';
+import ProductModel from '../models/product.model.js';
 
 export const importProduct = async (req, res) => {
     try {
@@ -14,8 +14,8 @@ export const importProduct = async (req, res) => {
                     price: product.price
                 });
             });                    
-            Product.insertMany(productData);    
-            res.send({status:200, message: 'File successfully' });
+            ProductModel.insertMany(productData);    
+            res.send({status:200, message: 'File successfully', fileType: 'product'});
         });
     } catch (error) {
         res.send({status:400, message: error.message });

@@ -3,6 +3,7 @@ import Home from "./pages/Home"
 import Product from "./pages/Product"
 import Employee from "./pages/Employee"
 
+
 const App = () => {
   return (
     <div> 
@@ -14,6 +15,6 @@ const App = () => {
     </div>
   )
 }
-
+    
 export default App
 
