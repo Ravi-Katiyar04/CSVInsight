@@ -1,39 +1,89 @@
-# Frontend Documentation
+# CSVInsight Frontend Documentation
 
-## Routes
+## Environment Variables
+```env
+VITE_BASE_URL=http://localhost:5000
+```
+
+## Routes Structure
 
 ### Home Page
-`Route: /`
+- **Path**: `/`
+- **Component**: `Home`
+- **Description**: Landing page with navigation options to upload files
 
-The home page provides a user interface for uploading CSV files for both employees and products.
+### Upload Forms
+- **Path**: `/upload/employee` 
+- **Component**: `EmployeeUpload`
+- **Description**: Form to upload employee CSV files
+- **API Integration**:
+  ```javascript
+  POST /employee/uploadFile
+  Content-Type: multipart/form-data
+  Response: {
+    status: 200,
+    message: "File uploaded successfully"
+  }
+  ```
 
-#### Components
-- File upload input field
-- Two action buttons:
-  - EmployeeCSV: For uploading employee data
-  - ProductCSV: For uploading product data
+- **Path**: `/upload/product`
+- **Component**: `ProductUpload`
+- **Description**: Form to upload product CSV files
+- **API Integration**:
+  ```javascript
+  POST /product/uploadFile
+  Content-Type: multipart/form-data
+  Response: {
+    status: 200,
+    message: "File uploaded successfully",
+    fileType: "product"
+  }
+  ```
 
-#### UI Elements
-- Background: Light blue (sky-200)
-- Upload container: 
-  - Light blue background (sky-100)
-  - White border
-  - Rounded corners
-  - Shadow effect
-- File input: Standard file input with black border
-- Buttons:
-  - EmployeeCSV: Dark blue (sky-800)
-  - ProductCSV: Medium blue (sky-700)
-  - White text
-  - Blue borders
+## Components Structure
 
-#### Layout
-- Centered on screen
-- Vertical flex layout
-- Container size: 60% height, 50% width of screen
-- Elements spaced with gap-6 (1.5rem)
 
-#### Navigation
-- `/` - Home page
-- `/product` - Product page
-- `/employee` - Employee page
+### Form Components
+- `FileUpload`: Reusable file upload component with:
+  - File selection
+  - Drag & drop support
+  - File type validation
+  - Upload progress indicator
+
+### UI Components
+- `Button`: Reusable button component
+- `Loading`: Loading spinner component
+
+## API Integration
+The frontend uses Axios for API calls. Base configuration:
+
+```javascript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
+```
+
+### Error Handling
+All API calls are wrapped with try-catch blocks:
+```javascript
+try {
+  const response = await api.post('/endpoint', formData);
+  // Handle success
+} catch (error) {
+  // Handle error with Alert component
+}
+```
+
+## Styling
+- TailwindCSS for utility-first styling
+- Custom CSS modules where needed
+- Responsive design breakpoints:
+  - sm: 640px
+  - md: 768px
+  - lg: 1024px
+  - xl: 1280px
