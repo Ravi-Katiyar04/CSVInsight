@@ -8,7 +8,6 @@ import EmployeeModel from './models/employee.model.js';
 import ProductModel from './models/product.model.js';
 
 const app = express();
-
 connectToDB();
 
 app.use(cors());
