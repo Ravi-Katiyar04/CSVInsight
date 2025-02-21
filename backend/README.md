@@ -149,7 +149,7 @@ The application uses MongoDB with automatic schema generation:
 ## Testing
 
 ```bash
-npm test
+npx nodemon
 ```
 
 Test coverage includes:
