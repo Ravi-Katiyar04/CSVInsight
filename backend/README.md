@@ -1,118 +1,159 @@
+# CSVInsight Backend API Documentation
 
-# Backend API Documentation
+## Setup
 
-<!-- ## Setup
 ```bash
 npm install
 npm start
-``` -->
+```
 
 ## Environment Variables
-- `PORT`: Server port (default: 5000)
-- `DB_URL`: MongoDB connection string
+
+```env
+PORT=5000
+DB_URL=mongodb+srv://[username]:[password]@[cluster].mongodb.net/[database]
+```
 
 ## API Endpoints
 
-### 1. Product Routes
-Base path: `/product`
-
-#### Upload Product CSV
-- **Endpoint**: `POST /product/uploadFile`
+### 1. Upload CSV File
+- **URL**: `/upload`
+- **Method**: `POST`
 - **Content-Type**: `multipart/form-data`
 - **Request Body**:
-  - `file`: CSV file containing product data
-- **CSV Format**:
-  ```csv
-  name,flavour,size,price
-  Product1,Vanilla,Large,29.99
   ```
-- **Success Response** (200):
+  file: [CSV File]
+  ```
+- **Description**: Uploads and processes any CSV file with dynamic columns
+- **Example Request**:
+  ```bash
+  curl -X POST \
+    http://localhost:5000/upload \
+    -H 'Content-Type: multipart/form-data' \
+    -F 'file=@/path/to/your/file.csv'
+  ```
+- **Success Response**:
   ```json
   {
-    "status": 200,
-    "message": "File successfully",
-    "fileType": "product"
+    "success": true,
+    "message": "Data imported successfully"
   }
   ```
-- **Error Response** (400):
+- **Error Response**:
   ```json
   {
-    "status": 400,
-    "message": "Error message details"
-  }
-  ```
-
-### 2. Employee Routes
-Base path: `/employee`
-
-#### Upload Employee CSV
-- **Endpoint**: `POST /employee/uploadFile`
-- **Content-Type**: `multipart/form-data`
-- **Request Body**:
-  - `file`: CSV file containing employee data
-- **CSV Format**:
-  ```csv
-  NAME,NUMBER,ADDRESS
-  John Doe,1234567890,123 Main St
-  ```
-- **Success Response** (200):
-  ```json
-  {
-    "status": 200,
-    "message": "File successfully"
-  }
-  ```
-- **Error Response** (400):
-  ```json
-  {
-    "status": 400,
-    "message": "Error message details"
+    "status": 500,
+    "error": "An error occurred while processing the CSV file."
   }
   ```
 
-### File Validation Middleware
-The application includes middleware that validates CSV files:
+### 2. Get Processed Data
+- **URL**: `/getData`
+- **Method**: `GET`
+- **Description**: Retrieves all processed data from the most recently uploaded CSV
+- **Example Request**:
+  ```bash
+  curl http://localhost:5000/getData
+  ```
+- **Success Response**:
+  ```json
+  {
+    "success": true,
+    "headers": ["column1", "column2", "column3"],
+    "employees": [
+      {
+        "_id": "65df12345678901234567890",
+        "column1": "value1",
+        "column2": "value2",
+        "column3": "value3",
+        "createdAt": "2024-02-28T12:00:00.000Z"
+      }
+    ]
+  }
+  ```
+- **Error Response**:
+  ```json
+  {
+    "error": "error fetching employees: [error details]"
+  }
+  ```
 
-- Checks if file is present
-- Validates CSV headers
-- Detects CSV type (employee or product)
-- Validates file format
+## Data Storage
 
-#### Error Responses for File Validation:
-```json
-{
-  "error": "No CSV file uploaded"
-}
-```
-```json
-{
-  "error": "Invalid CSV format"
-}
-```
-```json
-{
-  "error": "Error processing CSV file",
-  "details": "Error details message"
-}
-```
+### Dynamic Schema Generation
+- The system automatically generates MongoDB schemas based on CSV headers
+- All fields are stored as Strings by default
+- Each document includes:
+  - Dynamic fields from CSV columns
+  - `createdAt` timestamp
+  - 24-hour data expiration
 
-### Data Models
-
-#### Product Schema
+Example of generated schema:
 ```javascript
 {
-  name: String,
-  flavour: String,
-  size: String,
-  price: Number
+  [headerName]: { 
+    type: String 
+  },
+  // ... other dynamic fields
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 86400 // 24 hours
+  }
 }
 ```
 
-#### Employee Schema
-```javascript
+## File Upload Specifications
+
+### Storage Configuration
+- Files are temporarily stored in `./public/uploads/`
+- Original filenames are preserved
+- Uses multer for file handling
+
+### CSV Processing
+- Supports any CSV format with headers
+- Automatically detects column names
+- Processes data row by row
+- Handles large files efficiently using streams
+
+## Error Handling
+
+Common error scenarios:
+- Invalid CSV format
+- File upload failures
+- Database connection issues
+- Data processing errors
+
+Error response format:
+```json
 {
-  name: String,
-  number: Number,
-  address: String
+  "error": "Error description",
+  "status": 400/500
 }
 ```
+
+## Database Configuration
+
+The application uses MongoDB with automatic schema generation:
+- Dynamic collection names based on timestamp
+- Automatic data cleanup after 24 hours
+- Flexible schema adaptation to any CSV structure
+
+## Security Considerations
+
+- File size limits enforced by multer
+- Temporary file storage with cleanup
+- Data expiration for privacy
+- Input validation for CSV format
+
+## Testing
+
+```bash
+npm test
+```
+
+Test coverage includes:
+- CSV upload functionality
+- Data retrieval
+- Schema generation
+- Error handling
