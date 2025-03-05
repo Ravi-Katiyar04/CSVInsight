@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const [file, setFile] = useState(null);
@@ -41,11 +42,11 @@ const Home = () => {
     };
 
     return (
-        <div className="h-screen w-screen bg-sky-200 flex justify-center items-center">
-            <div className="bg-sky-100 border-2 border-white rounded-2xl flex flex-col gap-6 justify-center items-center shadow-2xl h-3/5 w-2/4 p-6">
+        <div className="h-screen w-screen p-4 bg-sky-200 flex justify-center items-center box-border overflow-x-hidden ">
+            <div className="bg-sky-100 border-2 border-white rounded-2xl flex flex-col gap-6 justify-center items-center shadow-2xl h-fit w-fit p-4">
                 <label className="font-semibold text-xl" htmlFor="csvfile">Upload CSV file:</label>
                 <input
-                    className="border-2 border-black p-1 rounded-lg"
+                    className="border-2 border-black p-1 rounded-lg w-4/5"
                     type="file"
                     name="file"
                     id="csvfile"
@@ -61,7 +62,15 @@ const Home = () => {
                 </button>
 
                 {message && <p className="text-red-600">{message}</p>}
+
+                <Link
+                    to="/teacher-student"
+                    className="border-2 border-blue-500 bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-900"
+                >
+                    Teachers-Students
+                </Link>
             </div>
+            
         </div>
     );
 };

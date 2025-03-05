@@ -37,10 +37,12 @@ cd backend
 
 2. Install dependencies:
 ```bash
-npm install -y
+npm init -y
 npm install express
 npm install dotenv cors
+npm install mongoose
 npm install body-parser
+npm install csv-parser
 npm install csvtojson
 npm install multer
 ```
@@ -71,6 +73,8 @@ cd frontend
 ```bash
 npm create vite@latest
 npm install
+npm install react-router-dom
+npm install axios
 npm install -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init -p
 ```
