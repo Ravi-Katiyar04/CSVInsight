@@ -192,17 +192,4 @@ Router.get('/getData', async (req, res) => {
 });
 
 
-
-Router.get('/getStudentsData', async (req, res) => {
-    StudentDynamicModel.find()
-        .then(students => res.json({ success: true, studentHeaders, students }))
-        .catch(err => res.status(400).json({ error: "error fetching employees" + err }));
-});
-
-Router.get('/getTeachersData', async (req, res) => {
-    teacherDynamicModel.find()
-        .then(teachers => res.json({ success: true, teacherRecords, teachers }))
-        .catch(err => res.status(400).json({ error: "error fetching employees" + err }));
-});
-
 export default Router;
