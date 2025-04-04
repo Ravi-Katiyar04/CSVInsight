@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 const Home = () => {
     const [file, setFile] = useState(null);
@@ -63,12 +62,6 @@ const Home = () => {
 
                 {message && <p className="text-red-600">{message}</p>}
 
-                <Link
-                    to="/teacher-student"
-                    className="border-2 border-blue-500 bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-900"
-                >
-                    Teachers-Students
-                </Link>
             </div>
             
         </div>
