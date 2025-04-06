@@ -73,60 +73,71 @@ cd frontend
 ```bash
 npm create vite@latest
 npm install
-npm install react-router-dom
-npm install axios
+```
+
+3. Install additional dependencies:
+```bash
+npm install react-router-dom axios
 npm install -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init -p
 ```
-tailwind.config.js
-```/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-index.css
-```
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
 
-3. Start the development server:
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
 ## API Endpoints
 
-### Product Routes
-- `POST /product/uploadFile` - Upload product CSV file
+### Backend Endpoints
 
-### Employee Routes
-- `POST /employee/uploadFile` - Upload employee CSV file
+#### 1. Upload CSV File
+- **URL**: `/upload`
+- **Method**: `POST`
+- **Content-Type**: `multipart/form-data`
+- **Request Body**:
+  ```
+  file: [CSV File]
+  ```
+- **Description**: Uploads and processes any CSV file with dynamic columns
 
-## CSV File Formats
+#### 2. Get Processed Data
+- **URL**: `/getData`
+- **Method**: `GET`
+- **Description**: Retrieves all processed data from the most recently uploaded CSV
 
-### Product CSV Format
-```csv
-id,name,flavour,size,price
-1,Product1,Vanilla,Large,29.99
-```
-
-### Employee CSV Format
-```csv
-NAME,NUMBER,ADDRESS
-John Doe,1234567890,123 Main St
-```
+#### 3. Edit Data
+- **URL**: `/edit`
+- **Method**: `PUT`
+- **Content-Type**: `application/json`
+- **Request Body**:
+  ```json
+  {
+    "_id": "document_id",
+    "field1": "new_value",
+    "field2": "new_value"
+  }
+  ```
+ 
 
 ## Technologies Used
-- Frontend: React.js with TailwindCSS
-- Backend: Node.js with Express.js
-- Database: MongoDB Atlas
-- File Processing: csvtojson
+- **Frontend**: React.js with TailwindCSS
+- **Backend**: Node.js with Express.js
+- **Database**: MongoDB Atlas
+- **File Processing**: csvtojson
+
+## Testing
+
+### Backend Testing
+Run the backend server with:
+```bash
+npx nodemon
+```
+
+### Frontend Testing
+Run the frontend development server with:
+```bash
+npm run dev
+```
+
+
