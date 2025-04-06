@@ -94,7 +94,7 @@ const Card = ({ employee: initialEmployee, headers }) => {
             onSubmit={handleSave}
             className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md"
           >
-            <h2 className="text-2xl font-bold mb-4">Edit Employee</h2>
+            <h2 className="text-2xl font-bold mb-4">Edit</h2>
             {headers.map((field, index) => (
               <div key={index} className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
