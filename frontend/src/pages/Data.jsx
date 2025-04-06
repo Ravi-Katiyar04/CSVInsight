@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import Card from '../components/Card';
 import axios from 'axios';
@@ -58,81 +57,84 @@ const Data = () => {
     };
 
     return (
-        <div className='bg-lime-300 h-full min-h-screen flex flex-col items-center py-10 gap-8 relative'>
-            <div className="relative flex gap-4">
-                <div className="relative">
-                    <button
-                        className='border-2 border-black rounded-md px-4 py-2 bg-gray-300'
-                        onClick={() => setShowFieldDropdown(!showFieldDropdown)}
-                    >
-                        Filter by Field
-                    </button>
+        <div className="h-screen w-screen p-4 bg-gradient-to-r from-green-200 to-green-300 flex flex-col items-center box-border overflow-x-hidden">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Uploaded Data</h1>
+            <div className="w-11/12 md:w-4/5 lg:w-3/4 bg-white shadow-3xl rounded-lg p-6 overflow-auto">
+                <div className="relative flex gap-4 mb-6">
+                    <div className="relative">
+                        <button
+                            className='border-2 border-black rounded-md px-4 py-2 bg-gray-300'
+                            onClick={() => setShowFieldDropdown(!showFieldDropdown)}
+                        >
+                            Filter by Field
+                        </button>
 
-                    {showFieldDropdown && (
-                        <div className="absolute top-12 left-0 bg-white border border-black rounded-md shadow-md flex flex-col z-50">
-                            {myheaders.map(field => (
+                        {showFieldDropdown && (
+                            <div className="absolute top-12 left-0 bg-white border border-black rounded-md shadow-md flex flex-col z-50">
+                                {myheaders.map(field => (
+                                    <button
+                                        key={field}
+                                        className={`px-4 py-2 hover:bg-gray-200 ${selectedField === field ? 'bg-gray-500 text-white' : ''}`}
+                                        onClick={() => handleFieldSelect(field)}
+                                    >
+                                        {field}
+                                    </button>
+                                ))}
                                 <button
-                                    key={field}
-                                    className={`px-4 py-2 hover:bg-gray-200 ${selectedField === field ? 'bg-gray-500 text-white' : ''}`}
-                                    onClick={() => handleFieldSelect(field)}
+                                    className="px-4 py-2 bg-red-400 text-white"
+                                    onClick={() => {
+                                        setFilteredEmployees(employees);
+                                        setSelectedField(null);
+                                        setSelectedValue(null);
+                                        setShowFieldDropdown(false);
+                                        setShowValueDropdown(false);
+                                    }}
                                 >
-                                    {field}
+                                    Clear Filter
                                 </button>
-                            ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {selectedField && showValueDropdown && (
+                        <div className="relative">
                             <button
-                                className="px-4 py-2 bg-red-400 text-white"
-                                onClick={() => {
-                                    setFilteredEmployees(employees);
-                                    setSelectedField(null);
-                                    setSelectedValue(null);
-                                    setShowFieldDropdown(false);
-                                    setShowValueDropdown(false);
-                                }}
+                                className='border-2 border-black rounded-md px-4 py-2 bg-gray-300'
+                                onClick={() => setShowValueDropdown(!showValueDropdown)}
                             >
-                                Clear Filter
+                                Select {selectedField} Value
                             </button>
+
+                            <div className="absolute top-12 left-0 bg-white border border-black rounded-md shadow-md flex flex-col z-50">
+                                {uniqueValues.map(value => (
+                                    <button
+                                        key={value}
+                                        className={`px-4 py-2 hover:bg-gray-200 ${selectedValue === value ? 'bg-gray-500 text-white' : ''}`}
+                                        onClick={() => handleValueSelect(value)}
+                                    >
+                                        {value}
+                                    </button>
+                                ))}
+                                <button
+                                    className="px-4 py-2 bg-red-400 text-white"
+                                    onClick={() => {
+                                        setFilteredEmployees(employees);
+                                        setSelectedValue(null);
+                                        setShowValueDropdown(false);
+                                    }}
+                                >
+                                    Clear Selection
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
 
-                {selectedField && showValueDropdown && (
-                    <div className="relative">
-                        <button
-                            className='border-2 border-black rounded-md px-4 py-2 bg-gray-300'
-                            onClick={() => setShowValueDropdown(!showValueDropdown)}
-                        >
-                            Select {selectedField} Value
-                        </button>
-
-                        <div className="absolute top-12 left-0 bg-white border border-black rounded-md shadow-md flex flex-col z-50">
-                            {uniqueValues.map(value => (
-                                <button
-                                    key={value}
-                                    className={`px-4 py-2 hover:bg-gray-200 ${selectedValue === value ? 'bg-gray-500 text-white' : ''}`}
-                                    onClick={() => handleValueSelect(value)}
-                                >
-                                    {value}
-                                </button>
-                            ))}
-                            <button
-                                className="px-4 py-2 bg-red-400 text-white"
-                                onClick={() => {
-                                    setFilteredEmployees(employees);
-                                    setSelectedValue(null);
-                                    setShowValueDropdown(false);
-                                }}
-                            >
-                                Clear Selection
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            <div className="flex flex-wrap gap-4 p-4 justify-center relative z-10">
-                {filteredEmployees.map(employee => (
-                    <Card key={employee._id} employee={employee} headers={myheaders} />
-                ))}
+                <div className="flex flex-wrap gap-4 p-4 justify-center relative z-10">
+                    {filteredEmployees.map(employee => (
+                        <Card key={employee._id} employee={employee} headers={myheaders} />
+                    ))}
+                </div>
             </div>
         </div>
     );

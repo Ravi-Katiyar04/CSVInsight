@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -41,11 +40,11 @@ const Home = () => {
     };
 
     return (
-        <div className="h-screen w-screen p-4 bg-sky-200 flex justify-center items-center box-border overflow-x-hidden ">
-            <div className="bg-sky-100 border-2 border-white rounded-2xl flex flex-col gap-6 justify-center items-center shadow-2xl h-fit w-fit p-4">
-                <label className="font-semibold text-xl" htmlFor="csvfile">Upload CSV file:</label>
+        <div className="h-screen w-screen p-4 bg-gradient-to-r from-sky-200 to-sky-300 flex justify-center items-center box-border overflow-x-hidden">
+            <div className="bg-white border-2 border-gray-200 rounded-2xl flex flex-col gap-6 justify-center items-center shadow-3xl h-fit w-11/12 md:w-2/3 lg:w-1/2 p-6">
+                <label className="font-semibold text-2xl text-gray-700" htmlFor="csvfile">Upload CSV file:</label>
                 <input
-                    className="border-2 border-black p-1 rounded-lg w-4/5"
+                    className="border-2 border-gray-300 p-2 rounded-lg w-full md:w-4/5 focus:outline-none focus:ring-2 focus:ring-sky-500"
                     type="file"
                     name="file"
                     id="csvfile"
@@ -55,15 +54,14 @@ const Home = () => {
                 
                 <button
                     onClick={handleUpload}
-                    className="border-2 border-blue-500 bg-sky-800 text-white px-4 py-2 rounded-lg hover:bg-sky-900"
+                    className="border-2 border-blue-500 bg-gradient-to-r from-sky-800 to-sky-600 text-white px-6 py-3 rounded-lg hover:shadow-lg hover:scale-105 transition-transform duration-300"
                 >
                     Upload
                 </button>
 
-                {message && <p className="text-red-600">{message}</p>}
+                {message && <p className="text-red-600 text-center mt-4">{message}</p>}
 
             </div>
-            
         </div>
     );
 };

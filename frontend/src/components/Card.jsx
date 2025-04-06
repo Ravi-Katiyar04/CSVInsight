@@ -1,162 +1,134 @@
 
-// import { useState, useEffect } from 'react';
-
-// const Card = (prop) => {
-//     const [employee, setEmployee] = useState({});
-//     const [header, setHeader] = useState([])
-//     const [showEdit, setShowEdit] = useState(false);
-
-//     useEffect(() => {
-//         setHeader(prop.headers);
-//         setEmployee(prop.employee);
-//     }, []);
-
-//     useEffect(() => {
-//         const clickOutside = (e) => {
-//             if (!e.target.closest('.card')) {
-//                 setShowEdit(false);
-//             }
-//         }
-//         window.addEventListener('click', clickOutside);
-//         return () => window.removeEventListener('click', clickOutside);
-//     }, []);
-
-//     return (
-//         <div className="max-w-60 border-2 border-black rounded-lg shadow-lg relative hover:bg-gray-200 hover:z-10 hover:scale-105 transition-transform duration-300 card">
-//             <div className="p-4">
-//                 {header.map((field, index) => (
-//                     <p key={index} className="text-gray-600 mt-2">
-//                         {field} : {employee[field]}
-//                     </p>
-//                 ))}
-//             </div>
-//             <div className="p-4 flex justify-end">
-//                 <button
-//                     className="px-2 py-1 border-2 border-black rounded-lg hover:bg-gray-200"
-//                     onClick={() => setShowEdit(!showEdit)}
-//                 >
-//                     Edit
-//                 </button>
-//             </div>
-//             {showEdit && <div className="absolute inset-0 bg-white bg-opacity-50 z-10">
-//                 <div className="absolute inset-0 flex justify-center items-center p-4">
-//                     <div className="bg-white p-4 rounded-lg shadow-lg">
-//                         <h2 className="text-2xl font-bold">Edit {employee.name}</h2>
-//                         <form onSubmit={(e) => {
-//                             e.preventDefault();
-//                             prop.edit(employee);
-//                             setShowEdit(false);
-//                         }}>
-//                             {header.map((field, index) => (
-//                                 <label key={index} className="block text-lg">
-//                                     {field}
-//                                     <input
-//                                         type="text"
-//                                         value={employee[field]}
-//                                         onChange={(e) => setEmployee({
-//                                             ...employee,
-//                                             [field]: e.target.value
-//                                         })}
-//                                         className="block border-2 border-black rounded-lg p-2 w-full"
-//                                     />
-//                                 </label>
-//                             ))}
-//                             <button type="submit" className="bg-green-500 p-2 rounded-lg text-white">Save</button>
-//                         </form>
-//                     </div>
-//                 </div>
-//             </div>}
-//         </div>
-//     );
-// }
-
-
-// export default Card;
-
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const Card = (prop) => {
-    const [employee, setEmployee] = useState({});
-    const [header, setHeader] = useState([])
-    const [showEdit, setShowEdit] = useState(false);
+const Card = ({ employee: initialEmployee, headers }) => {
+  const [employee, setEmployee] = useState({});
+  const [formData, setFormData] = useState({});
+  const [showEdit, setShowEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        setHeader(prop.headers);
-        setEmployee(prop.employee);
-    }, []);
+  const formRef = useRef(null);
 
-    useEffect(() => {
-        const clickOutside = (e) => {
-            if (!e.target.closest('.card')) {
-                setShowEdit(false);
-            }
-        }
-        window.addEventListener('click', clickOutside);
-        return () => window.removeEventListener('click', clickOutside);
-    }, []);
+  useEffect(() => {
+    setEmployee(initialEmployee);
+  }, [initialEmployee]);
 
-    const handleSave = async () => {
-        try {
-            const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/edit`, employee);
-            if (response.status === 200) {
-                setShowEdit(false);
-                // prop.onEdit(employee);
-            }
-        } catch (error) {
-            console.error("Error saving changes:", error);
-        }
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    if (confirm('Are you sure you want to edit this data?')) {
+      setFormData(employee); // Set current employee data into form
+      setShowEdit(true);
+    }
+  };
+
+  const handleClickOutside = useCallback((event) => {
+    if (formRef.current && !formRef.current.contains(event.target)) {
+      setShowEdit(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showEdit) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    return (
-        <div className="max-w-60 border-2 border-black rounded-lg shadow-lg relative hover:bg-gray-200 hover:z-10 hover:scale-105 transition-transform duration-300 card">
-            <div className="p-4">
-                {header.map((field, index) => (
-                    <p key={index} className="text-gray-600 mt-2">
-                        {field} : {employee[field]}
-                    </p>
-                ))}
-            </div>
-            <div className="p-4 flex justify-end">
-                <button
-                    className="px-2 py-1 border-2 border-black rounded-lg hover:bg-gray-200"
-                    onClick={() => setShowEdit(!showEdit)}
-                >
-                    Edit
-                </button>
-            </div>
-            {showEdit && <div className="absolute inset-0 bg-white bg-opacity-50 z-10">
-                <div className="absolute inset-0 flex justify-center items-center p-4">
-                    <div className="bg-white p-4 rounded-lg shadow-lg">
-                        <h2 className="text-2xl font-bold">Edit {employee.name}</h2>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSave();
-                        }}>
-                            {header.map((field, index) => (
-                                <label key={index} className="block text-lg">
-                                    {field}
-                                    <input
-                                        type="text"
-                                        value={employee[field]}
-                                        onChange={(e) => setEmployee({
-                                            ...employee,
-                                            [field]: e.target.value
-                                        })}
-                                        className="block border-2 border-black rounded-lg p-2 w-full"
-                                    />
-                                </label>
-                            ))}
-                            <button type="submit"  className="bg-green-500 p-2 rounded-lg text-white">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>}
-        </div>
-    );
-}
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEdit, handleClickOutside]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/edit`,
+        formData
+      );
+      if (response.status === 200) {
+        setEmployee(formData); // Update local view
+        setShowEdit(false);
+      }
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div
+      ref={formRef}
+      className={`relative bg-white border border-gray-200 rounded-lg shadow-lg p-4 ${
+        showEdit ? '' : 'hover:shadow-3xl hover:scale-105 transition-transform duration-300'
+      }`}
+    >
+      <div className="p-4">
+        {headers.map((field, index) => (
+          <p key={index} className="text-gray-600 mt-2">
+            {field} : {employee[field]}
+          </p>
+        ))}
+      </div>
+      <div className="p-4 flex justify-end">
+        <button
+          className="px-2 py-1 border-2 border-black rounded-lg hover:bg-gray-200"
+          onClick={handleEditClick}
+        >
+          Edit
+        </button>
+      </div>
+
+      {showEdit && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 z-50 flex justify-center items-center p-4">
+          <form
+            ref={formRef}
+            onSubmit={handleSave}
+            className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md"
+          >
+            <h2 className="text-2xl font-bold mb-4">Edit Employee</h2>
+            {headers.map((field, index) => (
+              <div key={index} className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  {field}
+                </label>
+                <input
+                  type="text"
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  required
+                  className="border rounded w-full py-2 px-3 text-gray-700"
+                />
+              </div>
+            ))}
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+Card.propTypes = {
+  employee: PropTypes.object.isRequired,
+  headers: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
 
 export default Card;
+
 
