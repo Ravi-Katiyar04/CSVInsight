@@ -1,13 +1,11 @@
 # CSVInsight Project
 
-A web application for uploading and processing CSV files for both product and employee data.
+A web application for uploading and processing CSV files.
 
 ## Project Structure
 ```
 CSVInsight/
 ├── backend/
-│   ├── controllers/
-│   ├── models/
 │   ├── routes/
 │   ├── db/
 │   ├── public/uploads/
