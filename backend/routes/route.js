@@ -116,14 +116,92 @@ const Router = express();
 Router.use(bodyParser.urlencoded({ extended: true }));
 Router.use(express.static(path.resolve('public')));
 
+// const dynamicModels = {}; // To hold multiple dynamic models keyed by model name
+// let latestModelName = ""; // To retrieve last created model in GET route
+// let headers = [];
+
+// // Set up multer for file uploads
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, './public/uploads');
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, Date.now() + '-' + file.originalname); // Prevent filename conflicts
+//     }
+// });
+// const upload = multer({ storage });
+
+// // Upload CSV and create dynamic model with TTL
+// Router.post("/upload", upload.single("file"), async (req, res) => {
+//     const filePath = req.file.path;
+//     headers = [];
+
+//     try {
+//         const records = [];
+
+//         // Step 1: Read headers and records
+//         await new Promise((resolve, reject) => {
+//             fs.createReadStream(filePath)
+//                 .pipe(csvParser())
+//                 .on("headers", (headerList) => {
+//                     headers = headerList;
+//                 })
+//                 .on("data", (row) => records.push(row))
+//                 .on("end", resolve)
+//                 .on("error", reject);
+//         });
+
+//         if (!headers.length || !records.length) {
+//             return res.status(400).json({ success: false, message: "Invalid or empty CSV file" });
+//         }
+
+//         // Step 2: Build schema
+//         const schemaDefinition = {};
+//         headers.forEach(header => {
+//             schemaDefinition[header] = { type: String };
+//         });
+
+//         schemaDefinition.createdAt = {
+//             type: Date,
+//             default: Date.now,
+//             expires: 86400 // 24 hours
+//         };
+
+//         // Step 3: Create unique model name
+//         const modelName = "DynamicModel_" + Date.now();
+//         latestModelName = modelName;
+
+//         // Step 4: Create and store the dynamic model
+//         const dynamicSchema = new mongoose.Schema(schemaDefinition);
+//         const DynamicModel = mongoose.model(modelName, dynamicSchema);
+//         dynamicModels[modelName] = DynamicModel;
+
+//         // Step 5: Save data
+//         await DynamicModel.insertMany(records);
+
+//         res.json({ success: true, message: "Data imported and will auto-delete in 24 hours", modelName });
+
+//     } catch (error) {
+//         console.error("CSV upload error:", error);
+//         res.status(500).json({ success: false, message: "Failed to process CSV file" });
+//     }
+// });
+
+
 const dynamicModels = {}; // To hold multiple dynamic models keyed by model name
 let latestModelName = ""; // To retrieve last created model in GET route
 let headers = [];
 
+// Ensure uploads directory exists
+const uploadDir = './public/uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Set up multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/uploads');
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname); // Prevent filename conflicts
@@ -133,6 +211,10 @@ const upload = multer({ storage });
 
 // Upload CSV and create dynamic model with TTL
 Router.post("/upload", upload.single("file"), async (req, res) => {
+    // Check if a file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
     const filePath = req.file.path;
     headers = [];
 
