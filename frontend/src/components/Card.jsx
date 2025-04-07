@@ -68,7 +68,7 @@ const Card = ({ employee: initialEmployee, headers }) => {
     <div
       ref={formRef}
       className={`relative bg-white border border-gray-200 rounded-lg shadow-lg p-4 ${
-        showEdit ? '' : 'hover:shadow-3xl hover:scale-105 transition-transform duration-300'
+        showEdit ? '' : 'hover:shadow-3xl hover:scale-105 transition-transform duration-300 '
       }`}
     >
       <div className="p-4">
