@@ -68,10 +68,10 @@ const Data = () => {
     };
 
     return (
-        <div className="h-screen w-screen p-4 bg-gradient-to-r from-green-200 to-green-300 flex flex-col items-center box-border overflow-x-hidden">
+        <div className="h-screen relative w-screen p-4 bg-gradient-to-r from-green-200 to-green-300 flex flex-col items-center box-border overflow-x-hidden">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Uploaded Data</h1>
-            <div className="w-11/12 md:w-4/5 lg:w-3/4 bg-white shadow-2xl rounded-lg p-6 overflow-auto">
-                <div className="relative flex flex-wrap gap-4 mb-6 items-center">
+            <div className="w-11/12 md:w-4/5  lg:w-3/4 bg-white shadow-2xl no-scrollbar rounded-lg p-6 overflow-auto">
+                <div className=" flex sticky z-50 left-4 flex-wrap gap-4 mb-6 items-center">
                     <div className="relative">
                         <button
                             className="border border-green-500 rounded-md px-6 py-2 bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-300 shadow-sm"
